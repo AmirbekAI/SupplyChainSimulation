@@ -8,10 +8,10 @@ import java.util.UUID;
 public class Customer {
     private final String id;
     private String name;
-    private String location;
+    private Location location;
     private String email;
 
-    public Customer(String name, String location, String email) {
+    public Customer(String name, Location location, String email) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.location = location;
@@ -19,7 +19,7 @@ public class Customer {
     }
 
     // Constructor for loading existing customers (e.g., from repository)
-    public Customer(String id, String name, String location, String email) {
+    public Customer(String id, String name, Location location, String email) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -35,7 +35,7 @@ public class Customer {
         return name;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
@@ -48,7 +48,7 @@ public class Customer {
         this.name = name;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

@@ -24,19 +24,24 @@ public class InventoryService {
                 .findFirst();
     }
 
-    public void reserveStock(UUID warehouseId, UUID productId, int quantity) {
-        Optional<InventoryItem> inventoryItemOpt = findInventoryItem(warehouseId, productId);
+    public void reserveStock(UUID warehouseId, List<OrderItem> orderItems) {
 
-        if (inventoryItemOpt.isEmpty()) {
-            throw new InventoryItemNotFoundException(warehouseId, productId);
+        for (OrderItem item: orderItems) {
+            UUID productId = item.getProductId();
+            int quantity = item.getQuantity();
+            Optional<InventoryItem> inventoryItemOpt = findInventoryItem(warehouseId, productId);
+
+            if (inventoryItemOpt.isEmpty()) {
+                throw new InventoryItemNotFoundException(warehouseId, productId);
+            }
+
+            InventoryItem inventoryItem = inventoryItemOpt.get();
+            if (inventoryItem.getAvailableQuantity() < quantity) {
+                throw new InsufficientStockException(productId, warehouseId, quantity, inventoryItem.getAvailableQuantity());
+            }
+
+            inventoryItem.reserve(quantity);
         }
-
-        InventoryItem inventoryItem = inventoryItemOpt.get();
-        if (inventoryItem.getAvailableQuantity() < quantity) {
-            throw new InsufficientStockException(productId, warehouseId, quantity, inventoryItem.getAvailableQuantity());
-        }
-
-        inventoryItem.reserve(quantity);
     }
 
     public void releaseStock(UUID warehouseId, UUID productId, int quantity) {

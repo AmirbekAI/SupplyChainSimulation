@@ -9,15 +9,15 @@ import java.util.UUID;
  * Represents a customer order in the supply chain system.
  */
 public class Order {
-    private final String id;
-    private final String customerId;
+    private final UUID id;
+    private final UUID customerId;
     private final List<OrderItem> orderItems;
     private OrderStatus status;
     private final boolean isTransactional;
     private final LocalDateTime createdAt;
 
-    public Order(String customerId, List<OrderItem> orderItems, boolean isTransactional) {
-        this.id = UUID.randomUUID().toString();
+    public Order(UUID customerId, List<OrderItem> orderItems, boolean isTransactional) {
+        this.id = UUID.randomUUID();
         this.customerId = customerId;
         this.orderItems = new ArrayList<>(orderItems); // Defensive copy
         this.status = OrderStatus.CREATED;
@@ -26,7 +26,7 @@ public class Order {
     }
 
     // Constructor for loading existing orders (e.g., from repository)
-    public Order(String id, String customerId, List<OrderItem> orderItems, OrderStatus status, 
+    public Order(UUID id, UUID customerId, List<OrderItem> orderItems, OrderStatus status,
                  boolean isTransactional, LocalDateTime createdAt) {
         this.id = id;
         this.customerId = customerId;
@@ -37,11 +37,11 @@ public class Order {
     }
 
     // Getters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 

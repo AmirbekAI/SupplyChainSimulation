@@ -6,20 +6,20 @@ import java.util.UUID;
  * Represents a warehouse in the supply chain system.
  */
 public class Warehouse {
-    private final String id;
+    private final UUID id;
     private String name;
     private Location location;
     private int maxCapacity;
 
     public Warehouse(String name, Location location, int maxCapacity) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID();
         this.name = name;
         this.location = location;
         this.maxCapacity = maxCapacity;
     }
 
     // Constructor for loading existing warehouses (e.g., from repository)
-    public Warehouse(String id, String name, Location location, int maxCapacity) {
+    public Warehouse(UUID id, String name, Location location, int maxCapacity) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -27,7 +27,7 @@ public class Warehouse {
     }
 
     // Getters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 

@@ -10,20 +10,22 @@ import java.util.UUID;
  * Each shipment is associated with one order and one warehouse.
  */
 public class Shipment {
-    private final String id;
-    private final String orderId;
-    private final String warehouseId;
-    private final String customerId;
+    private final UUID id;
+    private final UUID orderId;
+    private final UUID warehouseId;
+    private final UUID customerId;
+    private final Location destination;
     private final List<OrderItem> shipmentItems;
     private ShipmentStatus status;
     private final LocalDateTime createdAt;
     private LocalDateTime shippedAt;
 
-    public Shipment(String orderId, String warehouseId, String customerId, List<OrderItem> shipmentItems) {
-        this.id = UUID.randomUUID().toString();
+    public Shipment(UUID orderId, UUID warehouseId, UUID customerId, Location destination, List<OrderItem> shipmentItems) {
+        this.id = UUID.randomUUID();
         this.orderId = orderId;
         this.warehouseId = warehouseId;
         this.customerId = customerId;
+        this.destination = destination;
         this.shipmentItems = new ArrayList<>(shipmentItems); // Defensive copy
         this.status = ShipmentStatus.CREATED;
         this.createdAt = LocalDateTime.now();
@@ -31,13 +33,14 @@ public class Shipment {
     }
 
     // Constructor for loading existing shipments (e.g., from repository)
-    public Shipment(String id, String orderId, String warehouseId, String customerId, 
+    public Shipment(UUID id, UUID orderId, UUID warehouseId, UUID customerId, Location destination,
                     List<OrderItem> shipmentItems, ShipmentStatus status, 
                     LocalDateTime createdAt, LocalDateTime shippedAt) {
         this.id = id;
         this.orderId = orderId;
         this.warehouseId = warehouseId;
         this.customerId = customerId;
+        this.destination = destination;
         this.shipmentItems = new ArrayList<>(shipmentItems);
         this.status = status;
         this.createdAt = createdAt;
@@ -45,19 +48,19 @@ public class Shipment {
     }
 
     // Getters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public String getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public String getWarehouseId() {
+    public UUID getWarehouseId() {
         return warehouseId;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 
