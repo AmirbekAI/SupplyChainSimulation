@@ -13,15 +13,9 @@ import java.util.UUID;
 public class OrderService {
 
     private final InMemoryRepository<Order> storage;
-    private final WarehouseService warehouseService;
-    private final InventoryService inventoryService;
-    private final ShipmentService shipmentService;
 
-    public OrderService(InMemoryRepository<Order> storage, WarehouseService warehouseService, InventoryService inventoryService, ShipmentService shipmentService) {
+    public OrderService(InMemoryRepository<Order> storage) {
         this.storage = storage;
-        this.warehouseService = warehouseService;
-        this.inventoryService = inventoryService;
-        this.shipmentService = shipmentService;
     }
 
     public Order createOrder(UUID customerId, List<OrderItem> orderItems, boolean isTransactional) {

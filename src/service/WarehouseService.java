@@ -13,7 +13,8 @@ public class WarehouseService {
     private final InMemoryRepository<Warehouse> storage;
     private final InventoryService inventoryService;
 
-    public WarehouseService(InMemoryRepository<Warehouse> inMemoryRepository, InventoryService inventoryService) {
+    public WarehouseService(InMemoryRepository<Warehouse> inMemoryRepository, 
+    InventoryService inventoryService) {
         this.storage = inMemoryRepository;
         this.inventoryService = inventoryService;
     }
