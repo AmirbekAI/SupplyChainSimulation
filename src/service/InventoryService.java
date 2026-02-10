@@ -129,7 +129,7 @@ public class InventoryService {
         Optional<InventoryItem> inventoryItemOpt= findInventoryItem(warehouseId, productId);
 
         if (inventoryItemOpt.isEmpty()) {
-            throw new InventoryItemNotFoundException(warehouseId, productId);
+            throw new InventoryItemNotFoundException(productId, warehouseId);
         }
         InventoryItem inventoryItem = inventoryItemOpt.get();
         inventoryItem.deduct(quantity);
@@ -152,7 +152,7 @@ public class InventoryService {
         for (OrderItem item: items) {
             Optional<InventoryItem> inventoryItemOpt = findInventoryItem(warehouseId, item.getProductId());
             if (inventoryItemOpt.isEmpty()) { return false; }
-            if (inventoryItemOpt.get().getAvailableQuantity() <= item.getQuantity()) { return false; }
+            if (inventoryItemOpt.get().getAvailableQuantity() < item.getQuantity()) { return false; }
         }
         return true;
     }

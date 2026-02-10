@@ -6,6 +6,7 @@ import exceptions.CustomerNotFoundException;
 import repository.InMemoryRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CustomerService {
@@ -15,6 +16,16 @@ public class CustomerService {
         this.storage = storage;
     }
 
+    public Customer createCustomer(String name, Location location, String email) {
+        Objects.requireNonNull(name, "Customer name cannot be null");
+        Objects.requireNonNull(location, "Customer location cannot be null");
+        Objects.requireNonNull(email, "Customer location cannot be null");
+
+        Customer customer = new Customer(name, location, email);
+
+        storage.save(customer.getId(), customer);
+        return customer;
+    }
     public Customer getCustomerById(UUID customerId) {
         return storage.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer: " + customerId + " not found"));
@@ -23,6 +34,13 @@ public class CustomerService {
     public Location getCustomerLocation(UUID customerId) {
         Customer customer = getCustomerById(customerId);
         return customer.getLocation();
+    }
+
+    public Customer getCustomerByName(String name) {
+        return storage.findAll().stream()
+                .filter(cs -> cs.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new CustomerNotFoundException("Customer " + name + " not found"));
     }
 
     public List<Customer> getAllCustomers() {

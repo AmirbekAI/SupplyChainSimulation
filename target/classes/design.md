@@ -202,8 +202,8 @@ Infrastructure Layer (Repositories)
 **Helper Methods:**
 - `findSingleWarehouseForOrderItems(orderItems): Warehouse`
   - Returns warehouse that can fulfill all items or throws exception
-- `findWarehousesForOrderItems(orderItems): Map<OrderItem, Warehouse>`
-  - Returns map of each order item to its warehouse
+- `findWarehousesForOrderItems(orderItems): Map<Warehouse, List<OrderItem>>`
+  - Returns map of warehouses to their order items, grouping items that can be fulfilled from the same warehouse
 
 ---
 

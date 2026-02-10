@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="test.service.InventoryServiceTest" time="0.093" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="OrderFulfillmentServiceTest" time="0.058" tests="7" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -7,6 +7,7 @@
     <property name="java.vm.vendor" value="Ubuntu"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
+    <property name="user.timezone" value="Asia/Bishkek"/>
     <property name="os.name" value="Linux"/>
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
@@ -52,11 +53,29 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="canFulfillItems_throwsIllegalArgumentExceptionIfListIsEmpty" classname="test.service.InventoryServiceTest" time="0.046"/>
-  <testcase name="reserveStock_reducesAvailableQuantity" classname="test.service.InventoryServiceTest" time="0.003"/>
-  <testcase name="reserveStock_throwsInsufficientStockException_whenNoEnoughAvailableStock" classname="test.service.InventoryServiceTest" time="0.011"/>
-  <testcase name="getAvaialbleQuantity_returnsTheTotalNumberOfAProduct" classname="test.service.InventoryServiceTest" time="0.002"/>
-  <testcase name="canFulfillItems_returnsFalseIfCantFulfillItems" classname="test.service.InventoryServiceTest" time="0.002"/>
-  <testcase name="reserveStock_throwsInventoryItemNotFoundException_whenInventoryItemNotFound" classname="test.service.InventoryServiceTest" time="0.003"/>
-  <testcase name="canFulfillItems_returnsTrueIfCanFulfillItems" classname="test.service.InventoryServiceTest" time="0.002"/>
+  <testcase name="testCreateAndFulfillNonTransactionalOrder" classname="OrderFulfillmentServiceTest" time="0.025"/>
+  <testcase name="testCreateAndFulfillTransactionalOrder" classname="OrderFulfillmentServiceTest" time="0.002"/>
+  <testcase name="testOptimalWarehouseSelectionForDistantCustomer" classname="OrderFulfillmentServiceTest" time="0.006">
+    <system-out><![CDATA[Distance to Warehouse2: 282.842712474619
+Distance to Warehouse3: 565.685424949238
+✅ Optimal warehouse selection for distant customer test passed!
+]]></system-out>
+  </testcase>
+  <testcase name="testOptimalWarehouseSelection" classname="OrderFulfillmentServiceTest" time="0.006">
+    <system-out><![CDATA[Expected warehouse (Warehouse1): b3f06d39-fc56-4533-b23e-780879afe535
+Selected warehouse: b3f06d39-fc56-4533-b23e-780879afe535
+Are they equal? true
+✅ Optimal warehouse selection test passed! Selected closest warehouse.
+]]></system-out>
+  </testcase>
+  <testcase name="testFulfillOrderWithInsufficientInventory" classname="OrderFulfillmentServiceTest" time="0.002"/>
+  <testcase name="testShipOrder" classname="OrderFulfillmentServiceTest" time="0.003">
+    <system-out><![CDATA[Product1 ID: 0687d2e6-1658-41cf-a326-da2fbe562fd1
+Warehouse1 has Product1: cc6baf5e-ccee-4bb8-8caf-dc87a2360ef8
+Warehouse3 has Product1: d853c73e-9beb-49d2-ad3f-90566ccc68ee
+Shipment warehouse ID: cc6baf5e-ccee-4bb8-8caf-dc87a2360ef8
+✅ Ship order test passed!
+]]></system-out>
+  </testcase>
+  <testcase name="testMultipleShipmentsForNonTransactionalOrder" classname="OrderFulfillmentServiceTest" time="0.003"/>
 </testsuite>

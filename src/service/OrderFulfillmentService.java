@@ -40,6 +40,7 @@ public class OrderFulfillmentService {
             Order order = orderService.getOrderById(orderId);
             Location customerLocation =
                     customerService.getCustomerLocation(order.getCustomerId());
+
             if (order.isTransactional()) {
                 Warehouse warehouse =
                         warehouseService.findSingleOptimalWarehouseForOrderItems(
@@ -65,12 +66,17 @@ public class OrderFulfillmentService {
                 for (Map.Entry<Warehouse, List<OrderItem>> entry: warehouseToOrderItems.entrySet()) {
                     Warehouse warehouse = entry.getKey();
                     List<OrderItem> items = entry.getValue();
+                    
+                    // Create shipment
                     shipmentService.createShipment(
                             orderId,
                             order.getCustomerId(),
                             warehouse.getId(),
                             customerLocation,
                             items);
+                    
+                    // Reserve inventory for this warehouse
+                    inventoryService.reserveStock(warehouse.getId(), items);
                 }
             }
             orderService.updateStatus(order.getId(), OrderStatus.ALLOCATED);

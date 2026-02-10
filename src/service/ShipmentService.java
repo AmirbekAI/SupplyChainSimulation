@@ -30,8 +30,8 @@ public class ShipmentService {
         Shipment shipment =
                 new Shipment(
                         orderId,
-                        customerId,
                         warehouseId,
+                        customerId,
                         destination,
                         shipmentItems
                 );

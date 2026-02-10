@@ -6,20 +6,20 @@ import java.util.UUID;
  * Represents a customer in the supply chain system.
  */
 public class Customer {
-    private final String id;
+    private final UUID id;
     private String name;
     private Location location;
     private String email;
 
     public Customer(String name, Location location, String email) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID();
         this.name = name;
         this.location = location;
         this.email = email;
     }
 
     // Constructor for loading existing customers (e.g., from repository)
-    public Customer(String id, String name, Location location, String email) {
+    public Customer(UUID id, String name, Location location, String email) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -27,7 +27,7 @@ public class Customer {
     }
 
     // Getters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 

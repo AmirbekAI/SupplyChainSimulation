@@ -5,6 +5,7 @@ import domain.model.Location;
 import domain.model.OrderItem;
 import domain.model.Warehouse;
 import exceptions.NoAvailableWarehouseException;
+import exceptions.WarehouseNotFoundException;
 import repository.InMemoryRepository;
 
 import java.util.*;
@@ -26,6 +27,14 @@ public class WarehouseService {
 
     public Optional<Warehouse> getWarehouseById(UUID id) {
         return storage.findById(id);
+    }
+
+    public Warehouse getWarehouseByName(String name) {
+        return storage.findAll()
+                .stream()
+                .filter(wh -> wh.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new WarehouseNotFoundException("Warehouse " + name + " not found"));
     }
 
     public List<Warehouse> getAllWarehouses() {
@@ -50,7 +59,7 @@ public class WarehouseService {
             throw new NoAvailableWarehouseException("No single available warehouse found for orderItems (Transactional)");
         }
 
-        return warehouses.getFirst();
+        return warehouses.get(0);
     }
 
     public Map<Warehouse, List<OrderItem>> findWarehousesForOrderItems(List<OrderItem> orderItems, Location location) {
@@ -66,7 +75,7 @@ public class WarehouseService {
             List<Warehouse> warehouses = findAvailableWarehousesForOrderItems(Collections.singletonList(orderItem), location);
 
             if (!warehouses.isEmpty()) {
-                warehouseToOrderItems.computeIfAbsent(warehouses.getFirst(), k -> new ArrayList<>()).add(orderItem);
+                warehouseToOrderItems.computeIfAbsent(warehouses.get(0), k -> new ArrayList<>()).add(orderItem);
             }
         }
 

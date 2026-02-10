@@ -2,6 +2,10 @@ package test.service;
 
 import domain.model.InventoryItem;
 import domain.model.OrderItem;
+import domain.model.Product;
+import domain.model.ProductType;
+import domain.model.Warehouse;
+import domain.model.Location;
 import exceptions.InsufficientStockException;
 import exceptions.InventoryItemNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,18 +24,30 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class InventoryServiceTest {
 
     private InventoryService inventoryService;
-    private InMemoryRepository<InventoryItem> repository;
+    private InMemoryRepository<InventoryItem> inventoryRepository;
+    private InMemoryRepository<Product> productRepository;
+    private InMemoryRepository<Warehouse> warehouseRepository;
 
     private UUID warehouseId;
     private UUID productId;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemoryRepository<InventoryItem>();
-        inventoryService = new InventoryService(repository);
+        inventoryRepository = new InMemoryRepository<>();
+        productRepository = new InMemoryRepository<>();
+        warehouseRepository = new InMemoryRepository<>();
+        
+        inventoryService = new InventoryService(inventoryRepository, productRepository, warehouseRepository);
 
         warehouseId = UUID.randomUUID();
         productId = UUID.randomUUID();
+        
+        // Create mock product and warehouse
+        Product product = new Product(productId, "Test Product", ProductType.ELECTRONIC, "Test");
+        Warehouse warehouse = new Warehouse(warehouseId, "Test Warehouse", new Location("Test", 0, 0), 1000);
+        
+        productRepository.save(productId, product);
+        warehouseRepository.save(warehouseId, warehouse);
 
         InventoryItem inventoryItem = new InventoryItem(
                 productId,
@@ -39,12 +55,13 @@ public class InventoryServiceTest {
                 100
         );
 
-        repository.save(UUID.randomUUID(), inventoryItem);
+        inventoryRepository.save(inventoryItem.getId(), inventoryItem);
     }
 
     @Test
     void reserveStock_reducesAvailableQuantity() {
-        inventoryService.reserveStock(warehouseId, productId, 20);
+        List<OrderItem> orderItems = List.of(new OrderItem(productId, 20));
+        inventoryService.reserveStock(warehouseId, orderItems);
 
         int available = inventoryService.getAvailableQuantity(warehouseId, productId);
 
@@ -53,18 +70,21 @@ public class InventoryServiceTest {
 
     @Test
     void reserveStock_throwsInsufficientStockException_whenNoEnoughAvailableStock() {
+        List<OrderItem> orderItems = List.of(new OrderItem(productId, 10000));
         assertThrows(
                 InsufficientStockException.class,
-                () -> inventoryService.reserveStock(warehouseId, productId, 10000)
+                () -> inventoryService.reserveStock(warehouseId, orderItems)
         );
     }
 
     @Test
     void reserveStock_throwsInventoryItemNotFoundException_whenInventoryItemNotFound() {
         UUID randomProductId = UUID.randomUUID();
+        UUID randomWarehouseId = UUID.randomUUID();
+        List<OrderItem> orderItems = List.of(new OrderItem(randomProductId, 10));
         assertThrows(
                 InventoryItemNotFoundException.class,
-                () -> inventoryService.reserveStock(randomProductId, warehouseId, 10)
+                () -> inventoryService.reserveStock(randomWarehouseId, orderItems)
         );
     }
 
@@ -83,8 +103,8 @@ public class InventoryServiceTest {
         InventoryItem invItem1 = new InventoryItem(randomProductId1, randomWarehouseId, 10);
         InventoryItem invItem2 = new InventoryItem(randomProductId2, randomWarehouseId, 30);
 
-        repository.save(invItem1.getId(), invItem1);
-        repository.save(invItem2.getId(), invItem2);
+        inventoryRepository.save(invItem1.getId(), invItem1);
+        inventoryRepository.save(invItem2.getId(), invItem2);
 
         OrderItem invItemForRequest1 = new OrderItem(randomProductId1, 5);
         OrderItem invItemForRequest2 = new OrderItem(randomProductId2, 20);
@@ -107,8 +127,8 @@ public class InventoryServiceTest {
         InventoryItem invItem1 = new InventoryItem(randomProductId1, randomWarehouseId, 10);
         InventoryItem invItem2 = new InventoryItem(randomProductId2, randomWarehouseId, 30);
 
-        repository.save(invItem1.getId(), invItem1);
-        repository.save(invItem2.getId(), invItem2);
+        inventoryRepository.save(invItem1.getId(), invItem1);
+        inventoryRepository.save(invItem2.getId(), invItem2);
 
         OrderItem invItemForRequest1 = new OrderItem(randomProductId1, 20);
         OrderItem invItemForRequest2 = new OrderItem(randomProductId2, 20);

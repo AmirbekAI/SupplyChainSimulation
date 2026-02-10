@@ -16,7 +16,7 @@ public class ProductService {
         this.storage = storage;
     }
 
-    public Product createNewProduct (String name, ProductType type, String description) {
+    public Product createNewProduct(String name, ProductType type, String description) {
         Objects.requireNonNull(name, "Product name cannot be null");
         Objects.requireNonNull(type, "Product type cannot be null");
 
@@ -28,6 +28,13 @@ public class ProductService {
     public Product getProductById(UUID id) {
         return storage.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("Product " + id.toString() + "not found"));
+    }
+
+    public Product getProductByName(String name) {
+        return storage.findAll().stream()
+                .filter(pr -> pr.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException("Product " + name + " not found"));
     }
 
     public List<Product> getProductsByType(ProductType type) {
